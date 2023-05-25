@@ -1,0 +1,469 @@
+title_screen.dart
+
+Step 1: add scene
+
+import 'package:flutter/material.dart';
+
+import '../assets.dart';
+
+class TitleScreen extends StatelessWidget {
+  const TitleScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Stack(
+          children: [
+            /// Bg-Base
+            Image.asset(AssetPaths.titleBgBase),
+
+            /// Bg-Receive
+            Image.asset(AssetPaths.titleBgReceive),
+
+            /// Mg-Base
+            Image.asset(AssetPaths.titleMgBase),
+
+            /// Mg-Receive
+            Image.asset(AssetPaths.titleMgReceive),
+
+            /// Mg-Emit
+            Image.asset(AssetPaths.titleMgEmit),
+
+            /// Fg-Rocks
+            Image.asset(AssetPaths.titleFgBase),
+
+            /// Fg-Receive
+            Image.asset(AssetPaths.titleFgReceive),
+
+            /// Fg-Emit
+            Image.asset(AssetPaths.titleFgEmit),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Step 2: add color
+
+class _LitImage extends StatelessWidget {
+  const _LitImage({
+    required this.color,
+    required this.imgSrc,
+    required this.lightAmt,
+  });
+  final Color color;
+  final String imgSrc;
+  final double lightAmt;
+
+  @override
+  Widget build(BuildContext context) {
+    final hsl = HSLColor.fromColor(color);
+    return Image.asset(
+      imgSrc,
+      color: hsl.withLightness(hsl.lightness * lightAmt).toColor(),
+      colorBlendMode: BlendMode.modulate,
+    );
+  }
+}                    
+
+step 3: paint in color
+
+import 'package:flutter/material.dart';
+
+import '../assets.dart';
+import '../styles.dart';                                  // Add this import
+
+class TitleScreen extends StatelessWidget {
+  const TitleScreen({super.key});
+
+  final _finalReceiveLightAmt = 0.7;                      // Add this attribute
+  final _finalEmitLightAmt = 0.5;                         // And this attribute
+
+  @override
+  Widget build(BuildContext context) {
+    final orbColor = AppColors.orbColors[0];              // Add this final variable
+    final emitColor = AppColors.emitColors[0];            // And this one
+
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Stack(
+          children: [
+            /// Bg-Base
+            Image.asset(AssetPaths.titleBgBase),
+
+            /// Bg-Receive
+            _LitImage(                                    // Modify from here...
+              color: orbColor,
+              imgSrc: AssetPaths.titleBgReceive,
+              lightAmt: _finalReceiveLightAmt,
+            ),                                            // to here.
+
+            /// Mg-Base
+            _LitImage(                                    // Modify from here...
+              imgSrc: AssetPaths.titleMgBase,
+              color: orbColor,
+              lightAmt: _finalReceiveLightAmt,
+            ),                                            // to here.
+
+            /// Mg-Receive
+            _LitImage(                                    // Modify from here...
+              imgSrc: AssetPaths.titleMgReceive,
+              color: orbColor,
+              lightAmt: _finalReceiveLightAmt,
+            ),                                            // to here.
+
+            /// Mg-Emit
+            _LitImage(                                    // Modify from here...
+              imgSrc: AssetPaths.titleMgEmit,
+              color: emitColor,
+              lightAmt: _finalEmitLightAmt,
+            ),                                            // to here.
+
+            /// Fg-Rocks
+            Image.asset(AssetPaths.titleFgBase),
+
+            /// Fg-Receive
+            _LitImage(                                    // Modify from here...
+              imgSrc: AssetPaths.titleFgReceive,
+              color: orbColor,
+              lightAmt: _finalReceiveLightAmt,
+            ),                                            // to here.
+
+            /// Fg-Emit
+            _LitImage(                                    // Modify from here...
+              imgSrc: AssetPaths.titleFgEmit,
+              color: emitColor,
+              lightAmt: _finalEmitLightAmt,
+            ),                                            // to here.
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LitImage extends StatelessWidget {
+  const _LitImage({
+    required this.color,
+    required this.imgSrc,
+    required this.lightAmt,
+  });
+  final Color color;
+  final String imgSrc;
+  final double lightAmt;
+
+  @override
+  Widget build(BuildContext context) {
+    final hsl = HSLColor.fromColor(color);
+    return Image.asset(
+      imgSrc,
+      color: hsl.withLightness(hsl.lightness * lightAmt).toColor(),
+      colorBlendMode: BlendMode.modulate,
+    );
+  }
+}
+
+step 4: Add a title (title_screen_ui)
+
+import 'package:extra_alignments/extra_alignments.dart';
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+
+import '../assets.dart';
+import '../common/ui_scaler.dart';
+import '../styles.dart';
+
+class TitleScreenUi extends StatelessWidget {
+  const TitleScreenUi({
+    super.key,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 40, horizontal: 50),
+      child: Stack(
+        children: [
+          /// Title Text
+          TopLeft(
+            child: UiScaler(
+              alignment: Alignment.topLeft,
+              child: _TitleText(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TitleText extends StatelessWidget {
+  const _TitleText();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Gap(20),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Transform.translate(
+              offset: Offset(-(TextStyles.h1.letterSpacing! * .5), 0),
+              child: Text('OUTPOST', style: TextStyles.h1),
+            ),
+            Image.asset(AssetPaths.titleSelectedLeft, height: 65),
+            Text('57', style: TextStyles.h2),
+            Image.asset(AssetPaths.titleSelectedRight, height: 65),
+          ],
+        ),
+        Text('INTO THE UNKNOWN', style: TextStyles.h3),
+      ],
+    );
+  }
+}
+
+step 5: add dificulty buttons
+
+const TitleScreenUi({
+    super.key,
+    required this.difficulty,                          
+    required this.onDifficultyPressed,
+    required this.onDifficultyFocused,
+  });
+
+  final int difficulty;
+  final void Function(int difficulty) onDifficultyPressed;
+  final void Function(int? difficulty) onDifficultyFocused; 
+///---------------------------------------------------------------------
+
+class _DifficultyBtns extends StatelessWidget {
+  const _DifficultyBtns({
+    required this.difficulty,
+    required this.onDifficultyPressed,
+    required this.onDifficultyFocused,
+  });
+
+  final int difficulty;
+  final void Function(int difficulty) onDifficultyPressed;
+  final void Function(int? difficulty) onDifficultyFocused;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _DifficultyBtn(
+          label: 'Casual',
+          selected: difficulty == 0,
+          onPressed: () => onDifficultyPressed(0),
+          onHover: (over) => onDifficultyFocused(over ? 0 : null),
+        ),
+        _DifficultyBtn(
+          label: 'Normal',
+          selected: difficulty == 1,
+          onPressed: () => onDifficultyPressed(1),
+          onHover: (over) => onDifficultyFocused(over ? 1 : null),
+        ),
+        _DifficultyBtn(
+          label: 'Hardcore',
+          selected: difficulty == 2,
+          onPressed: () => onDifficultyPressed(2),
+          onHover: (over) => onDifficultyFocused(over ? 2 : null),
+        ),
+        const Gap(20),
+      ],
+    );
+  }
+}
+
+class _DifficultyBtn extends StatelessWidget {
+  const _DifficultyBtn({
+    required this.selected,
+    required this.onPressed,
+    required this.onHover,
+    required this.label,
+  });
+  final String label;
+  final bool selected;
+  final VoidCallback onPressed;
+  final void Function(bool hasFocus) onHover;
+
+  @override
+  Widget build(BuildContext context) {
+    return FocusableControlBuilder(
+      onPressed: onPressed,
+      onHoverChanged: (_, state) => onHover.call(state.isHovered),
+      builder: (_, state) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SizedBox(
+            width: 250,
+            height: 60,
+            child: Stack(
+              children: [
+                /// Bg with fill and outline
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF00D1FF).withOpacity(.1),
+                    border: Border.all(color: Colors.white, width: 5),
+                  ),
+                ),
+
+                if (state.isHovered || state.isFocused) ...[
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF00D1FF).withOpacity(.1),
+                    ),
+                  ),
+                ],
+
+                /// cross-hairs (selected state)
+                if (selected) ...[
+                  CenterLeft(
+                    child: Image.asset(AssetPaths.titleSelectedLeft),
+                  ),
+                  CenterRight(
+                    child: Image.asset(AssetPaths.titleSelectedRight),
+                  ),
+                ],
+
+                /// Label
+                Center(
+                  child: Text(label.toUpperCase(), style: TextStyles.btn),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+step 6: change color with difficulty
+
+  Color get _emitColor =>
+      AppColors.emitColors[_difficultyOverride ?? _difficulty];
+  Color get _orbColor =>
+      AppColors.orbColors[_difficultyOverride ?? _difficulty];
+
+  /// Currently selected difficulty
+  int _difficulty = 0;
+
+  /// Currently focused difficulty (if any)
+  int? _difficultyOverride;
+
+  void _handleDifficultyPressed(int value) {
+    setState(() => _difficulty = value);
+  }
+
+  void _handleDifficultyFocused(int? value) {
+    setState(() => _difficultyOverride = value);
+  }
+
+Step 7: add Start Button
+
+class _StartBtn extends StatefulWidget {
+  const _StartBtn({required this.onPressed});
+  final VoidCallback onPressed;
+
+  @override
+  State<_StartBtn> createState() => _StartBtnState();
+}
+
+class _StartBtnState extends State<_StartBtn> {
+  AnimationController? _btnAnim;
+  bool _wasHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FocusableControlBuilder(
+      cursor: SystemMouseCursors.click,
+      onPressed: widget.onPressed,
+      builder: (_, state) {
+        if ((state.isHovered || state.isFocused) &&
+            !_wasHovered &&
+            _btnAnim?.status != AnimationStatus.forward) {
+          _btnAnim?.forward(from: 0);
+        }
+        _wasHovered = (state.isHovered || state.isFocused);
+        return SizedBox(
+          width: 520,
+          height: 100,
+          child: Stack(
+            children: [
+              Positioned.fill(child: Image.asset(AssetPaths.titleStartBtn)),
+              if (state.isHovered || state.isFocused) ...[
+                Positioned.fill(
+                    child: Image.asset(AssetPaths.titleStartBtnHover)),
+              ],
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text('START MISSION',
+                        style: TextStyles.btn.copyWith(fontSize: 24, letterSpacing: 18)),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+step 8: Add animation to start button
+
+///place this code under stack
+.animate(autoPlay: false, onInit: (c) => _btnAnim = c)
+              .shimmer(duration: .7.seconds, color: Colors.black),
+
+///place this code under sizedbox
+.animate()
+            .fadeIn(delay: 2.3.seconds)
+            .slide(begin: const Offset(0, .2));
+
+step 9: Animate Colors
+
+class _AnimatedColors extends StatelessWidget {
+  const _AnimatedColors({
+    required this.emitColor,
+    required this.orbColor,
+    required this.builder,
+  });
+
+  final Color emitColor;
+  final Color orbColor;
+
+  final Widget Function(BuildContext context, Color orbColor, Color emitColor)
+      builder;
+
+  @override
+  Widget build(BuildContext context) {
+    final duration = .5.seconds;
+    return TweenAnimationBuilder(
+      tween: ColorTween(begin: emitColor, end: emitColor),
+      duration: duration,
+      builder: (_, emitColor, __) {
+        return TweenAnimationBuilder(
+          tween: ColorTween(begin: orbColor, end: orbColor),
+          duration: duration,
+          builder: (context, orbColor, __) {
+            return builder(context, orbColor!, emitColor!);
+          },
+        );
+      },
+    );
+  }
+}
+
+
+
