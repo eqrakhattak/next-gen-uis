@@ -1,6 +1,4 @@
-title_screen.dart
-
-Step 1: add scene
+Step 1: add scene in title_screen.dart
 
 import 'package:flutter/material.dart';
 
