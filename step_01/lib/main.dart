@@ -3,18 +3,18 @@
 // found in the LICENSE file.
 
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:window_size/window_size.dart';
-import 'title_screen/title_screen.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+
+import 'styles.dart';
 
 void main() {
   if (!kIsWeb && (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
     WidgetsFlutterBinding.ensureInitialized();
     setWindowMinSize(const Size(800, 500));
   }
-  Animate.restartOnHotReload = true;
   runApp(const NextGenApp());
 }
 
@@ -26,8 +26,14 @@ class NextGenApp extends StatelessWidget {
     return MaterialApp(
       themeMode: ThemeMode.dark,
       darkTheme: ThemeData(brightness: Brightness.dark),
-      home:  const TitleScreen(),
+      home: Scaffold(
+        body: Center(
+          child: Text(
+            'Insert Next-Generation UI Here...',
+            style: TextStyles.h2,
+          ),
+        ),
+      ),
     );
   }
 }
-
